@@ -19,7 +19,7 @@ class ReadLogs extends Command
      *
      * @var string
      */
-    protected $description = 'Command description';
+    protected $description = 'Parsing the log file';
 
     /**
      * Execute the console command.
@@ -28,21 +28,20 @@ class ReadLogs extends Command
      */
     public function handle()
     {
+        //Parsing the file stored in storage
         $handle = fopen(storage_path('app/logs.txt'),'r') or die ('File opening failed');
-        $requestsCount = 0;
-        $num404 = 0;
-
 
         $records = [];
         while (!feof($handle)) {
-            $dd = fgets($handle); 
-            $row = explode(" ",$dd);
+            $logList = fgets($handle); 
+            $row = explode(" ",$logList);
             $record = [
                 'service_name' => $row[0],
                 'start_date' => ltrim($row[3],"[").' '.rtrim($row[4],"]"),
                 'status_code' => $row[8],
-                'log' => $dd
+                'log' => $logList
             ];
+            
             array_push($records,$record);
             
             if(count($records) > 10000) {
